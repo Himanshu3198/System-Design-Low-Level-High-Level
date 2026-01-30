@@ -1,0 +1,63 @@
+// TC - O(K+LOG(N)) LogN for BST
+// SC - O(N)
+class Leaderboard {
+
+    Map<Integer,Integer>playerScore;
+    TreeMap<Integer,Integer>topScore;
+    public Leaderboard() {
+        this.playerScore = new HashMap<>();
+        this.topScore = new TreeMap<>();
+    }
+    
+    public void addScore(int playerId, int score) {
+        if(!playerScore.containsKey(playerId)){
+            playerScore.put(playerId,score);
+            topScore.put(score,topScore.getOrDefault(score,0)+1);
+            return;
+        }
+        int prevScore = playerScore.get(playerId);
+        int updatedScore = prevScore+score;
+        playerScore.put(playerId,updatedScore);
+        topScore.put(updatedScore,topScore.getOrDefault(updatedScore,0)+1);
+        if(topScore.containsKey(prevScore)){
+            topScore.put(prevScore,topScore.getOrDefault(prevScore,0)-1);
+        }
+        if(topScore.get(prevScore) <=0){
+            topScore.remove(prevScore);
+        }
+
+
+    }
+    
+    public int top(int K) {
+        int sum = 0;
+        for(Map.Entry<Integer,Integer>e:topScore.descendingMap().entrySet()){
+            if( K == 0) break;
+            for(int i=1;i<=e.getValue() && K>0;i++){
+                 sum += e.getKey();
+                 K--;
+            }
+        }
+        return sum;
+    }
+    
+    public void reset(int playerId) {
+        
+        int currScore = playerScore.get(playerId);
+        playerScore.remove(playerId);
+        if(topScore.containsKey(currScore)){
+            topScore.put(currScore,topScore.getOrDefault(currScore,0)-1);
+        }
+        if(topScore.containsKey(currScore) && topScore.get(currScore) <= 0){
+            topScore.remove(currScore);
+        }
+    }
+}
+
+/**
+ * Your Leaderboard object will be instantiated and called as such:
+ * Leaderboard obj = new Leaderboard();
+ * obj.addScore(playerId,score);
+ * int param_2 = obj.top(K);
+ * obj.reset(playerId);
+ */
