@@ -32,6 +32,7 @@ public class WeatherStation implements Subject{
     }
 
     public void setWeather(String temperature,String humidity){
+        System.out.println("Attention Weather Update!");
         this.temperature = temperature;
         this.humidity = humidity;
         notifyObserver();

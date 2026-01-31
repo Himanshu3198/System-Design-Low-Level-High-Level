@@ -15,6 +15,9 @@ public class Demo {
         w.subscribe(p2);
 
         w.setWeather("52C","100F");
+        w.unsubscribe(p2);
+        w.unsubscribe(d2);
+        w.setWeather("60C","95F");
 
 
     }
