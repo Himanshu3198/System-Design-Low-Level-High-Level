@@ -65,10 +65,17 @@ public class BlockingQueueConsumerProducerProblem {
 
     public static void main(String[] args) {
         SharedResource2 sharedResource2 = new SharedResource2(5);
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        executor.submit(new Producer(sharedResource2));
-        executor.submit(new Consumer(sharedResource2));
-        executor.close();
+//        ExecutorService executor = Executors.newFixedThreadPool(2);
+//        executor.submit(new Producer(sharedResource2));
+//        executor.submit(new Consumer(sharedResource2));
+//        executor.close();
+
+         Thread t1 = new Thread(new Producer(sharedResource2));
+         Thread t2 = new Thread(new Consumer(sharedResource2));
+         t1.start();
+         t2.start();
+
+
     }
 
 
