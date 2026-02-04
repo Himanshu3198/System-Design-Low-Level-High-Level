@@ -1,5 +1,6 @@
 package JavaNotes.lambdaexpression;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -29,6 +30,13 @@ public class Practice04 {
         Map<String,Long> freq = fruits.stream().collect(Collectors.groupingBy(Function.identity(),Collectors.counting()));
         System.out.println("Freq of word");
         freq.forEach((k,v)-> System.out.println(k+","+v));
+
+        List<String> upperFruits = fruits.stream().map(s->s.toUpperCase()).collect(Collectors.toList());
+        upperFruits.forEach(System.out::println);
+
+        List<String> words = List.of("hello world","java stream");
+         List<String> allwords = words.stream().flatMap(s-> Arrays.stream(s.split(" "))).toList();
+         allwords.forEach(System.out::println);
 
     }
 }

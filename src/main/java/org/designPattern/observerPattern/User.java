@@ -12,8 +12,4 @@ public class User implements Observer{
         System.out.println(name+" received "+message);
     }
 
-    @Override
-    public void update(Job job) {
-
-    }
 }
