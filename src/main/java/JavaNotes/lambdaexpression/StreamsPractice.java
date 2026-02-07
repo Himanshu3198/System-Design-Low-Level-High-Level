@@ -2,8 +2,20 @@ package JavaNotes.lambdaexpression;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 
 public class StreamsPractice {
+
+    private static boolean isPrime(int n){
+
+        if( n<=1) return true;
+        for(int i=2;i*i<=n;i++){
+            if(n%i == 0) return false;
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
 
@@ -58,6 +70,61 @@ public class StreamsPractice {
         List<Integer> flattenedList = listOfLists.stream().flatMap(List::stream).toList();
         System.out.println("Flattened list");
         System.out.println(flattenedList);
+
+
+        // filter out prime number - change it to double->then calculate
+
+        double avg = numbers3.stream().filter(StreamsPractice::isPrime).mapToDouble(Integer::doubleValue).average().orElse(0.0);
+        System.out.println("Avg is "+avg);
+
+        // sum of string length
+
+        int sumOfStringLen = words.stream().mapToInt(String::length).sum();
+        System.out.println("sumOfStringLen"+sumOfStringLen);
+        words.stream().mapToInt(String::length).forEach(System.out::println);
+
+        List<String> numsOfString = List.of("10","50","12","18");
+        int sumOfStringNums = numsOfString.stream().mapToInt(Integer::parseInt).sum();
+        System.out.println("sumOfStringNums "+sumOfStringNums);
+
+        List<Integer>  numsRoots = List.of(1, 4, 9, 16);
+        numsRoots.stream().mapToDouble(Math::sqrt).forEach(System.out::println);
+
+        // calculate average price
+        List<Double> prices = List.of(99.5, 149.9, 200.0);
+
+        double avgPrice = prices.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        System.out.println("Avg selling price is "+avgPrice);
+
+        // convert C to F
+        List<Double> celsius = List.of(0.0, 25.0, 100.0);
+        System.out.println("Convert temperature C-F");
+        celsius.stream().mapToDouble(c->(c*9/5)+32).forEach(System.out::println);
+
+
+
+        // convert int to string mapToObj
+//        Square numbers as strings
+        List<Integer> n1 = List.of(1, 2, 3, 4);
+        System.out.println("square number as string");
+        List<String> n1String = n1.stream().mapToInt(n->n*n).mapToObj(String::valueOf).toList();
+        n1String.forEach(System.out::println);
+
+        List<String> s1Num = IntStream.range(1,5).mapToObj(x->"Num->"+x).toList();
+        System.out.println("s1Num is==");
+        s1Num.stream().forEach(System.out::println);
+
+        boolean isEven = n1.stream().anyMatch(n->n%2== 0);
+        System.out.println("check isEven for n1"+isEven);
+
+        boolean isLenThree = words.stream().allMatch(n->n.length()>3);
+        System.out.println("Check len of words greater than 3"+isLenThree);
+
+        // group and sum values
+        System.out.println("group and sum");
+        n1.stream().collect(Collectors.groupingBy(n->n%2==0,Collectors.summarizingInt(Integer::intValue))).forEach((k,v)-> System.out.println(k+"="+v));
+
+
 
 
     }
