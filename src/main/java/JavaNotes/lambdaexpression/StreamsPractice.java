@@ -125,7 +125,16 @@ public class StreamsPractice {
         n1.stream().collect(Collectors.groupingBy(n->n%2==0,Collectors.summarizingInt(Integer::intValue))).forEach((k,v)-> System.out.println(k+"="+v));
 
 
+    ///  skip and limit elements
+        System.out.println("Skip the first two element");
+        n1.stream().skip(2).forEach(System.out::println);
 
+        System.out.println("Limit 2 element");
+        n1.stream().limit(3).toList().forEach(System.out::println);
+
+        // top 2 largest numbers
+        System.out.println("Print top 2 largest number");
+        n1.stream().sorted(Comparator.reverseOrder()).limit(2).forEach(System.out::println);
 
     }
 }

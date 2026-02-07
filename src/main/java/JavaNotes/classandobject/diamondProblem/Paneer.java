@@ -1,4 +1,4 @@
-package JavaNotes.diamondproblem;
+package JavaNotes.classandobject.diamondProblem;
 
 public interface Paneer {
 

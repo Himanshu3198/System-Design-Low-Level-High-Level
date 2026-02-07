@@ -1,6 +1,6 @@
-package JavaNotes.diamondproblem;
+package JavaNotes.classandobject.diamondProblem;
 
-public class Milk implements Curd,Paneer{
+public class Milk implements Curd, Paneer {
 
     @Override
     public void print() {
