@@ -39,7 +39,7 @@ public class StreamPractice03 {
         /* you are given a list of integer you need to filter prime number after that make square of it and then calculate average*/
 
         List<Integer> nums = List.of(1,5,3,10,8,11,16,7,13,17);
-       OptionalDouble avg = nums.stream().filter(StreamPractice03::isPrime).map(x->x*x).mapToDouble(Integer::doubleValue).average();
+       OptionalDouble avg = nums.stream().filter(StreamPractice03::isPrime).map(x->x*x).mapToDouble(x->(double)x).average();
         System.out.println("avg is "+avg.orElse(0.0));
 
         System.out.println("Second highest salary");
