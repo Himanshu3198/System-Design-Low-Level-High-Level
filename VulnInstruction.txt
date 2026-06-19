@@ -1,0 +1,74 @@
+your-repo/
+├── .github/
+│   ├── copilot-instructions.md          # repo-wide Copilot context (see below)
+│   └── instructions/
+│       └── security.instructions.md     # optional, path-scoped (applyTo: "**/*.java")
+│
+├── tools/
+│   └── vuln-predict/
+│       ├── rules/
+│       │   └── vulnerability_knowledge_base.json   # the rule corpus — lives with the tool
+│       └── VulnerabilityPrediction.md              # design doc — lives with the tool
+│
+└── (gitignored, generated at run time)
+    └── VulnerabilitySummary.md           # per-run output, not committed
+
+
+add copilot-instructions.md
+## Security vulnerability scanning
+This repo uses a CWE-based vulnerability predictor (`tools/vuln-predict/`).
+- Rule corpus: `tools/vuln-predict/rules/vulnerability_knowledge_base.json`
+- Design/architecture: `tools/vuln-predict/VulnerabilityPrediction.md`
+- Latest scan report (if present): `VulnerabilitySummary.md`
+
+When reviewing or generating changes to controller/service/auth code, check
+whether `VulnerabilitySummary.md` exists and has open Critical/High findings
+for the files you're touching. If so, address them or explain why they're
+false positives before treating the change as complete. Prefer the
+`recommended_fix` pattern from the matching rule in the corpus over a
+generic fix.
+
+
+add .github/prompts/vuln-scan.prompt.md
+---
+name: vuln-scan
+description: Scan staged/changed code against the CWE rule corpus and produce VulnerabilitySummary.md
+mode: agent
+tools: ['codebase', 'search', 'editFiles', 'runCommands']
+---
+
+You are running the vulnerability prediction workflow for this repo.
+
+Context:
+- Rule corpus: `tools/vuln-predict/rules/vulnerability_knowledge_base.json`
+- Design spec: `tools/vuln-predict/VulnerabilityPrediction.md`
+- Output template: follow the exact section format used in `VulnerabilitySummary.md`
+
+Scope: ${input:scope:staged}
+(accepts: staged | branch:<name> | module:<path> | full)
+
+Steps:
+1. Resolve ${scope} into a concrete file/diff set as described in
+   VulnerabilityPrediction.md §3.2 (use `git diff` for staged/branch scope).
+2. For each changed file, identify code blocks that match a rule's
+   `detection_signals`, `vulnerable_pattern`, or `description` in the
+   rule corpus. Don't flag a match unless the surrounding code actually
+   exhibits the pattern (e.g. don't flag string concatenation that never
+   reaches a query/exec call).
+3. For each confirmed finding, extract the exact vulnerable line range.
+4. Draft a fix grounded in that rule's `secure_pattern` / `recommended_fix`.
+5. Write/overwrite `VulnerabilitySummary.md` at the repo root using the
+   same structure as the existing example: scan metadata header, one
+   `## Finding N: CWE-ID — name` section per issue with severity,
+   confidence, file:line, vulnerable code block, why-it's-a-risk,
+   recommended fix block, and automatable-fix flag.
+6. Print a one-line summary (counts by severity) in chat.
+
+If no rule corpus matches are found, say so explicitly rather than
+inventing findings.
+
+ Copilot Chat (the /vuln-scan prompt file)
+/vuln-scan
+/vuln-scan scope:staged
+/vuln-scan scope:module:payment-service
+/vuln-scan scope:branch:feature/payment-refactor
