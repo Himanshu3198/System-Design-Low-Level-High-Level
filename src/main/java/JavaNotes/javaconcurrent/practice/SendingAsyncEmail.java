@@ -20,18 +20,14 @@ public class SendingAsyncEmail {
     public static void main(String[] args) {
 
         List<String> emails = List.of("this is email 1","this is email 2","this is email 3","this is email 4");
-        List<CompletableFuture<Void>> futures =emails.stream().map(email->
-                                CompletableFuture
-                                        .supplyAsync(()-> {
-                                            try {
-                                                return sendEmail(email);
-                                            } catch (InterruptedException e) {
-                                                throw new RuntimeException(e);
-                                            }
-                                        })
-                                        .thenApply(String::toUpperCase)
-                                        .thenAccept(System.out::println)
-        ).toList();
+        List<CompletableFuture<String>>  futures = emails.stream().map(email->CompletableFuture.supplyAsync(()->{
+            try {
+                return sendEmail(email);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).thenApply(String::toUpperCase).thenAccept(System.out::println)).toList();
         futures.forEach(CompletableFuture::join);
+
     }
 }
